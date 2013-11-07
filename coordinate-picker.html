@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Coordinate Picker</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+
+      #map-canvas {
+        height: 100%;
+        width: 80%;
+        float: left;
+      }
+
+      #collected-data {
+        background-color: #B3D1C8;
+        border-left: 3px solid black;
+        height: 100%;
+        max-height: 100%;
+        overflow-y: scroll;
+      }
+
+      #clear {
+        margin: 3px 0px;
+        width: 100%;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+var map;
+var TILE_SIZE = 256;
+var start = new google.maps.LatLng(-33.48997739339725, 19.40072895000003);
+
+function bound(value, opt_min, opt_max) {
+  if (opt_min != null) value = Math.max(value, opt_min);
+  if (opt_max != null) value = Math.min(value, opt_max);
+  return value;
+}
+
+function degreesToRadians(deg) {
+  return deg * (Math.PI / 180);
+}
+
+function radiansToDegrees(rad) {
+  return rad / (Math.PI / 180);
+}
+
+/** @constructor */
+function MercatorProjection() {
+  this.pixelOrigin_ = new google.maps.Point(TILE_SIZE / 2,
+      TILE_SIZE / 2);
+  this.pixelsPerLonDegree_ = TILE_SIZE / 360;
+  this.pixelsPerLonRadian_ = TILE_SIZE / (2 * Math.PI);
+}
+
+MercatorProjection.prototype.fromLatLngToPoint = function(latLng,
+    opt_point) {
+  var me = this;
+  var point = opt_point || new google.maps.Point(0, 0);
+  var origin = me.pixelOrigin_;
+
+  point.x = origin.x + latLng.lng() * me.pixelsPerLonDegree_;
+
+  // Truncating to 0.9999 effectively limits latitude to 89.189. This is
+  // about a third of a tile past the edge of the world tile.
+  var siny = bound(Math.sin(degreesToRadians(latLng.lat())), -0.9999,
+      0.9999);
+  point.y = origin.y + 0.5 * Math.log((1 + siny) / (1 - siny)) *
+      -me.pixelsPerLonRadian_;
+  return point;
+};
+
+MercatorProjection.prototype.fromPointToLatLng = function(point) {
+  var me = this;
+  var origin = me.pixelOrigin_;
+  var lng = (point.x - origin.x) / me.pixelsPerLonDegree_;
+  var latRadians = (point.y - origin.y) / -me.pixelsPerLonRadian_;
+  var lat = radiansToDegrees(2 * Math.atan(Math.exp(latRadians)) -
+      Math.PI / 2);
+  return new google.maps.LatLng(lat, lng);
+};
+
+function createInfoWindowContent() {
+  var numTiles = 1 << map.getZoom();
+  var projection = new MercatorProjection();
+  var worldCoordinate = projection.fromLatLngToPoint(start);
+  var pixelCoordinate = new google.maps.Point(
+      worldCoordinate.x * numTiles,
+      worldCoordinate.y * numTiles);
+  var tileCoordinate = new google.maps.Point(
+      Math.floor(pixelCoordinate.x / TILE_SIZE),
+      Math.floor(pixelCoordinate.y / TILE_SIZE));
+
+  return [
+    'LatLng: ' + start.lat() + ' , ' + start.lng(),
+    'World Coordinate: ' + worldCoordinate.x + ' , ' +
+      worldCoordinate.y,
+    'Pixel Coordinate: ' + Math.floor(pixelCoordinate.x) + ' , ' +
+      Math.floor(pixelCoordinate.y),
+    'Tile Coordinate: ' + tileCoordinate.x + ' , ' +
+      tileCoordinate.y + ' at Zoom Level: ' + map.getZoom()
+  ].join('<br>');
+}
+
+function displayInList() {
+  document.getElementById('data').innerHTML += '[' +coordinate.lat() + ', ' +
+      coordinate.lng() +']' + "<br>";
+}
+
+function clearList() {
+  document.getElementById('data').innerHTML = '';
+}
+
+var coordinate;
+
+function initialize() {
+  var mapOptions = {
+    zoom: 6,
+    center: start,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  marker = new google.maps.Marker({
+    map: map,
+    draggable: true,
+  });
+  marker.setPosition(start);
+  var infoWindow = new google.maps.InfoWindow();
+  google.maps.event.addListener(marker, 'dragend', function(data) {
+    infoWindow = new google.maps.InfoWindow({
+      maxWidth: 500,
+      pixelOffset: new google.maps.Size(0.0,-35.0)
+    });
+    infoWindow.setPosition(data.latLng);
+    coordinate = data.latLng;
+    infoWindow.setContent(data.latLng.toString() + 
+      '<input type="button" value="Save" onclick="displayInList()"/>');
+    infoWindow.open(map);
+  });
+
+  google.maps.event.addListener(marker, 'dragstart', function(data) {
+    infoWindow.close(map);
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div id="collected-data">
+      <input id="clear" type="button" value="Clear" onclick="clearList()"/>
+      <br/>
+      <p id="data"></p>
+  </body>
+</html>
+
