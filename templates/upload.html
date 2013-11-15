@@ -7,10 +7,12 @@
 	<h1>Upload CSV file</h1>
 	{% endblock %}
 	{% block content %}
-	<form action="{{ WEB_SERVER }}" method=post enctype=multipart/form-data>
+	<form action="{{ CSV_UPLOAD_SERVER }}" method=post enctype=multipart/form-data>
 		<input type=file name=file>
 		<input type=submit value=upload>
 	</form>
+	{% endblock %}
+	{% block extracontent %}
 	{% endblock %}
 </body>
 </html>

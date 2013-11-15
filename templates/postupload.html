@@ -1,4 +1,18 @@
-{% extends upload.html %}
+{% extends "upload.html" %}
+
+{% block head %}
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<script src="{{ url_for('static', filename='api.js') }}"></script>
+	<script src="{{ url_for('static', filename='jquery-2.0.3.js') }}"></script>
+{% endblock %}
+
 {% block extracontent %}
-<h1>ok ok</h1>
+	<div id="panel">
+	  <input type="button" value="Reverse Geocode" onclick="getAddresses({{ COORDINATES }})">
+	</div>
+	<div id="address-canvas">
+	  <ul>
+	    <div id="address"></div>
+	  </ul>
+	</div>
 {% endblock %}

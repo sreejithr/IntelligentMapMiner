@@ -1,4 +1,3 @@
-
 import os
 import json
 from flask import Flask, request, render_template
@@ -33,6 +32,7 @@ def process_data(address_data):
             result += ','
     return result
 
+
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -42,6 +42,7 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return render_template('postupload.html')
     return render_template('upload.html', WEB_SERVER=app.config['WEB_SERVER'])
+
 
 @app.route('/data', methods=['POST'])
 def accept_data():
