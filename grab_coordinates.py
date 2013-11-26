@@ -1,5 +1,5 @@
 import mercator
-from opencv.build.map_extract import OpenCVMapAnalyzer
+from map_extract_tool.map_extract import OpenCVMapAnalyzer
 
 IMAGE_RESOLUTION = [600, 600]
 
