@@ -1,9 +1,11 @@
 import os
 import json
 
-from flask import Flask, request, render_template, url_for, redirect
+from flask import (Flask, request, render_template, url_for, redirect)
 from werkzeug import secure_filename
+
 from persistent_store import PersistentStore
+from coordinate_finder import get_coordinates
 
 
 WEB_SERVER = "http://127.0.0.1:5000/"
@@ -14,11 +16,32 @@ app.config['RESULT_FOLDER'] = "results"
 app.config['CSV_UPLOAD_SERVER'] = WEB_SERVER + "upload/"
 app.config['OUTPUT_FILE_NAME'] = "addresses.csv"
 app.config['UPLOAD_FOLDER'] = "uploads"
+app.config['IMAGE_FOLDER'] = "images"
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect(url_for('upload'))
+    return render_template("index.html") #redirect(url_for('kickstart'))
+
+
+@app.route('/kickstart', methods=['POST'])
+def kickstart():
+    if request.method == 'POST':
+        latlng = request.form['latlng']
+        lat, lng = latlng.split(',')
+        zoom_level = request.form['zoom_level']
+        input_file_path =\
+            os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+                'map{}.jpg'.format(latlng.split(',')[0]))
+        output_file_path =\
+            os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+                'result{}.jpg'.format(latlng.split(',')[0]))
+        image_resolution = [600, 600]
+
+        print get_coordinates(float(lat), float(lng), zoom_level,
+            image_resolution, input_file_path, output_file_path)
+
+    return "Success"
 
 
 @app.route('/upload', methods=['GET', 'POST'])

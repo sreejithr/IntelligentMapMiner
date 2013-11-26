@@ -1,0 +1,18 @@
+<html>
+<head>
+<title>Intelligent Map Miner</title>
+<script src="{{ url_for('static', filename='jquery-2.0.3.js') }}"></script>
+<script src="{{ url_for('static', filename='start_page.js') }}"></script>
+</head>
+
+<body>
+<form name="latlng_info">
+  <input type="text" id="latlng" name="latlng" placeholder="Enter comma-separated latitude and longitude"><br>
+  <input type="text" id="zoom_level" name="zoom_level" placeholder="Default is 15"><br>
+  <button type="button" onclick="kickstart()">Start</button>
+</form>
+
+<div id="coordinates"></div>
+</body>
+
+</html>

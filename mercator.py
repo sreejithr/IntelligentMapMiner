@@ -19,11 +19,11 @@ def latlng_to_world_coordinate(lat, lng):
 
 
 def world_coordinate_to_pixel_coordinate(w1, w2, zoom_level):
-	return [int(w1 * (2**zoom_level)), int(w2 * (2**zoom_level))]
+	return [int(w1 * (2**int(zoom_level))), int(w2 * (2**int(zoom_level)))]
 
 
 def pixel_coordinate_to_world_coordinate(x, y, zoom_level):
-	return [(x+0.0)/(2**zoom_level), (y+0.0)/(2**zoom_level)]
+	return [(x+0.0)/(2**int(zoom_level)), (y+0.0)/(2**int(zoom_level))]
 
 
 def world_coordinate_to_latlng(w1, w2):
