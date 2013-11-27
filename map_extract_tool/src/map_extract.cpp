@@ -43,7 +43,7 @@ class OpenCVMapAnalyzer {
             py::list py_list_coordinates;
 
             HoughCircles(img, circles, CV_HOUGH_GRADIENT, 2, 5,
-                         100, 20, 0, 5 // change the last two parameters
+                         100, 20, 0, 10 // change the last two parameters
                                        // (min_radius & max_radius) to detect larger circles
                          );
 

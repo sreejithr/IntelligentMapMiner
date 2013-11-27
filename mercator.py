@@ -1,6 +1,5 @@
 import math
 
-
 TILE_SIZE = 256
 
 pixelOrigin_x = TILE_SIZE/2.0
@@ -9,11 +8,13 @@ pixelOrigin_y = TILE_SIZE/2.0
 pixelsPerLngDegree = TILE_SIZE/360.0
 pixelsPerLngRadian = TILE_SIZE/ (2*math.pi)
 
+
 def latlng_to_world_coordinate(lat, lng):
 	w1 = pixelOrigin_x + lng * pixelsPerLngDegree
 
 	siny = math.sin(math.radians(lat))
-	w2 = pixelOrigin_y + 0.5 * math.log((1 + siny)/(1 - siny)) * -pixelsPerLngRadian
+	w2 =\
+	pixelOrigin_y + 0.5 * math.log((1 + siny)/(1 - siny)) * -pixelsPerLngRadian
 
 	return [w1, w2]
 

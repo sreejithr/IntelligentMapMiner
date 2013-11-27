@@ -1,8 +1,10 @@
 <html>
 <head>
 <title>Intelligent Map Miner</title>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script src="{{ url_for('static', filename='jquery-2.0.3.js') }}"></script>
 <script src="{{ url_for('static', filename='start_page.js') }}"></script>
+<script src="{{ url_for('static', filename='api.js') }}"></script>
 </head>
 
 <body>
@@ -12,7 +14,10 @@
   <button type="button" onclick="kickstart()">Start</button>
 </form>
 
+<button type="button" onclick="getAddresses()">Pull data</button>
+
 <div id="coordinates"></div>
+<div id="address"></div>
 </body>
 
 </html>

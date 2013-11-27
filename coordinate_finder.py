@@ -23,7 +23,6 @@ def get_coordinates(center_lat, center_lng, zoom_level, image_resolution,
 	"""
 	Extracts coordinates from map image using the OpenCV module
 	"""
-	import ipdb; ipdb.set_trace()
 	get_static_map_image([center_lat, center_lng], zoom_level, image_resolution,
 		input_file_path)
 
