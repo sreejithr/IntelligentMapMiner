@@ -18,6 +18,15 @@ def map_analyzer_pixel_to_map_pixel(center_pixel_x, center_pixel_y,
 		center_pixel_y + (pixel_coordinate[1] - image_resolution[0]/2)]
 
 
+def add_pixel_to_latlng(lat, lng, pixel_x, pixel_y, zoom_level):
+	w1, w2 = mercator.latlng_to_world_coordinate(lat, lng)
+	x, y = mercator.world_coordinate_to_pixel_coordinate(w1, w2, zoom_level)	
+	new_x, new_y = x + pixel_x, y + pixel_y
+	w1, w2 = mercator.pixel_coordinate_to_world_coordinate(new_x, new_y,
+			zoom_level)	
+	return mercator.world_coordinate_to_latlng(w1, w2)
+
+
 def get_coordinates(center_lat, center_lng, zoom_level, image_resolution,
 	input_file_path, output_file_path):
 	"""

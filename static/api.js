@@ -13,17 +13,16 @@ function getAddresses() {
       'url' : 'http://127.0.0.1:5000/coordinate',
       'type' : 'GET',
       'success' : function(data) {
-        setTimeout('getAddresses()', 2000);
-        console.log(data);
-        latlng = data.split(',');
-        codeLatLng(latlng);
+        if (data != 'null') {
+          setTimeout('getAddresses()', 2000);
+          latlng = data.split(',');
+          codeLatLng(latlng);
+        }
       }
     });
 }
 
 function codeLatLng(latLngList) {
-  // var input = document.getElementById('latlng').value;
-  // var latlngStr = input.split(',', 2);
   var lat = parseFloat(latLngList[0]);
   var lng = parseFloat(latLngList[1]);
   var latlng = new google.maps.LatLng(lat, lng);

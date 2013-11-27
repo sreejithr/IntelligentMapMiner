@@ -5,7 +5,7 @@ from flask import (Flask, request, render_template)
 from werkzeug import secure_filename
 
 from persistent_store import RedisStore
-from coordinate_finder import get_coordinates
+from coordinate_finder import (get_coordinates, add_pixel_to_latlng)
 
 
 WEB_SERVER = "http://127.0.0.1:5000/"
@@ -30,13 +30,17 @@ def kickstart():
         latlng = request.form['latlng']
         lat, lng = latlng.split(',')
         zoom_level = request.form['zoom_level']
+        image_resolution = [600, 600]
+
+        #add_pixel_to_latlng(float(lat), float(lng), image_resolution[0],
+        #  image_resolution[1], zoom_level) 
+
         input_file_path =\
             os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
                 'map{}.jpg'.format(latlng.split(',')[0]))
         output_file_path =\
             os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
                 'result{}.jpg'.format(latlng.split(',')[0]))
-        image_resolution = [600, 600]
 
         storage = RedisStore()
         storage.store_coordinate(get_coordinates(float(lat), float(lng),
