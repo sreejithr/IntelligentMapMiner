@@ -34,12 +34,17 @@
 
 	<div id="col2">
 		<div id="control_panel">
-			<button type="button" onclick="toggle_rectangle_mode()">Draw<br/>Rectange</button>
+			<form name="controls">
+				<input type="text" id="zoom_level" name="zoom_level" placeholder="Zoom Level"><br/>
+				<button type="button" onclick="toggle_rectangle_mode()">New<br/>Rectangle</button><br/>
+				<button id="calculate" type="button" onclick="calculate_coordinates()">Calculate<br/>coordinates</button>
+			</form>
 		</div>
+
 		<form name="latlng_info">
 		  <input type="text" id="latlng" name="latlng" placeholder="Enter comma-separated latitude and longitude"><br>
-		  <input type="text" id="zoom_level" name="zoom_level" placeholder="Default is 15"><br>
-		  <button type="button" onclick="kickstart()">Start</button>
+		  <input type="text" id="form_zoom_level" name="form_zoom_level" placeholder="Default is 15"><br>
+		  <button type="button" onclick="calculate_coordinates_with_form_data()">Start</button>
 		</form>
 
 		<button type="button" onclick="getAddresses()">Pull data</button>

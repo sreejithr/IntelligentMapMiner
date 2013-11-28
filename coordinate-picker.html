@@ -38,7 +38,7 @@
     <script>
 var map;
 var TILE_SIZE = 256;
-var start = new google.maps.LatLng(-33.48997739339725, 19.40072895000003);
+var start = new google.maps.LatLng(41.850033 , -87.65005229999997);
 
 function bound(value, opt_min, opt_max) {
   if (opt_min != null) value = Math.max(value, opt_min);
@@ -124,7 +124,7 @@ var coordinate;
 
 function initialize() {
   var mapOptions = {
-    zoom: 6,
+    zoom: 15,
     center: start,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
@@ -149,6 +149,12 @@ function initialize() {
       '<input type="button" value="Save" onclick="displayInList()"/>');
     infoWindow.open(map);
   });
+
+  var marker = new google.maps.Marker({
+    map: map,
+    draggable: true
+  });
+  marker.setPosition(new google.maps.LatLng(41.84047278910923, -87.65008449554443));
 
   google.maps.event.addListener(marker, 'dragstart', function(data) {
     infoWindow.close(map);

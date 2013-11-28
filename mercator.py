@@ -6,7 +6,7 @@ pixelOrigin_x = TILE_SIZE/2.0
 pixelOrigin_y = TILE_SIZE/2.0
 
 pixelsPerLngDegree = TILE_SIZE/360.0
-pixelsPerLngRadian = TILE_SIZE/ (2*math.pi)
+pixelsPerLngRadian = TILE_SIZE/(2*math.pi)
 
 
 def latlng_to_world_coordinate(lat, lng):

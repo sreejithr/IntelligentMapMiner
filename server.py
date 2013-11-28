@@ -1,5 +1,6 @@
 import os
 import json
+import copy
 
 from flask import (Flask, request, render_template)
 from werkzeug import secure_filename
@@ -27,36 +28,44 @@ def index():
 @app.route('/kickstart', methods=['POST'])
 def kickstart():
     if request.method == 'POST':
-        latlng = request.form['latlng']
-        lat, lng = latlng.split(',')
+        sw, ne = request.form['sw'], request.form['ne']
+        sw = [float(each) for each in sw.split(',')]
+        ne = [float(each) for each in ne.split(',')]
         zoom_level = request.form['zoom_level']
         image_resolution = [600, 600]
 
-        # sw = []
-        # ne = []
+        lat, lng = sw[0], sw[1]
+        max_lat, max_lng = ne[0], ne[1]
+        coordinates = []
 
-        # lat, lng = sw[0], sw[1]
-        # max_lat, max_lng = ne[0], ne[1]
-        # coordinates = []
+        initial_lat = copy.copy(lat)
 
-        # while lng < max_lng:
-        #     while lat < max_lat:
-        #         coordinates.append([lat, lng])
-        #         lat += add_pixel_to_latlng(float(lat), 0.0, image_resolution[0],
-        #                 image_resolution[1], zoom_level)[0]
-        #     lng += add_pixel_to_latlng(0.0, float(lng), image_resolution[0],
-        #             image_resolution[1], zoom_level)[1]
+        print lat, lng
+        print max_lat, max_lng
 
-        input_file_path =\
-            os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
-                'map{}.jpg'.format(latlng.split(',')[0]))
-        output_file_path =\
-            os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
-                'result{}.jpg'.format(latlng.split(',')[0]))
+        import ipdb; ipdb.set_trace()
+        while lng < max_lng:
+            lat = initial_lat
+            while lat < max_lat:
+                print lat, lng
+                coordinates.append([lat, lng])
+                lat = add_pixel_to_latlng(float(lat), float(lng), 0,
+                    -image_resolution[0], zoom_level)[0]
+            lng = add_pixel_to_latlng(float(lat), float(lng),
+                    image_resolution[1], 0, zoom_level)[1]
 
-        storage = RedisStore()
-        storage.store_coordinate(get_coordinates(float(lat), float(lng),
-            zoom_level, image_resolution, input_file_path, output_file_path))
+        print coordinates
+
+        # input_file_path =\
+        #     os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+        #         'map{}.jpg'.format(latlng.split(',')[0]))
+        # output_file_path =\
+        #     os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+        #         'result{}.jpg'.format(latlng.split(',')[0]))
+
+        # storage = RedisStore()
+        # storage.store_coordinate(get_coordinates(float(lat), float(lng),
+        #     zoom_level, image_resolution, input_file_path, output_file_path))
 
     return "Success"
 
