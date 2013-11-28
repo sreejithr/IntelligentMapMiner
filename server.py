@@ -28,44 +28,43 @@ def index():
 @app.route('/kickstart', methods=['POST'])
 def kickstart():
     if request.method == 'POST':
+        # Extract necessary information from the request
         sw, ne = request.form['sw'], request.form['ne']
         sw = [float(each) for each in sw.split(',')]
         ne = [float(each) for each in ne.split(',')]
         zoom_level = request.form['zoom_level']
         image_resolution = [600, 600]
 
+        # Assign information to respective variables. Make a copy of latitude
+        # (lat) for the sake of the while loop ahead
         lat, lng = sw[0], sw[1]
         max_lat, max_lng = ne[0], ne[1]
-        coordinates = []
-
+        centers = []
         initial_lat = copy.copy(lat)
 
-        print lat, lng
-        print max_lat, max_lng
-
-        import ipdb; ipdb.set_trace()
+        # We find out the centers of all the static images to be obtained.
         while lng < max_lng:
             lat = initial_lat
             while lat < max_lat:
-                print lat, lng
-                coordinates.append([lat, lng])
+                centers.append([lat, lng])
                 lat = add_pixel_to_latlng(float(lat), float(lng), 0,
                     -image_resolution[0], zoom_level)[0]
             lng = add_pixel_to_latlng(float(lat), float(lng),
                     image_resolution[1], 0, zoom_level)[1]
 
-        print coordinates
+        print len(centers)
 
-        # input_file_path =\
-        #     os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
-        #         'map{}.jpg'.format(latlng.split(',')[0]))
-        # output_file_path =\
-        #     os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
-        #         'result{}.jpg'.format(latlng.split(',')[0]))
-
-        # storage = RedisStore()
-        # storage.store_coordinate(get_coordinates(float(lat), float(lng),
-        #     zoom_level, image_resolution, input_file_path, output_file_path))
+        storage = RedisStore()
+        for center in centers:
+            input_file_path =\
+                os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+                    'map{}_{}.jpg'.format(center[0], center[1]))
+            output_file_path =\
+                os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+                    'result{}_{}.jpg'.format(center[0], center[1]))
+            
+            storage.store_coordinate(get_coordinates(float(lat), float(lng),
+                zoom_level, image_resolution, input_file_path, output_file_path))
 
     return "Success"
 
