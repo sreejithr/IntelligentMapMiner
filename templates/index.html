@@ -5,19 +5,49 @@
 <script src="{{ url_for('static', filename='jquery-2.0.3.js') }}"></script>
 <script src="{{ url_for('static', filename='start_page.js') }}"></script>
 <script src="{{ url_for('static', filename='api.js') }}"></script>
+<style type="text/css">
+
+* {
+	font-size: 10px;
+	margin: 0em;
+	padding: 0em;
+}
+
+#map {
+	height: 100%;
+	width: 60%;
+	float: left;
+}
+
+#control_panel button {
+	padding: 4px;
+}
+
+</style>
 </head>
 
 <body>
-<form name="latlng_info">
-  <input type="text" id="latlng" name="latlng" placeholder="Enter comma-separated latitude and longitude"><br>
-  <input type="text" id="zoom_level" name="zoom_level" placeholder="Default is 15"><br>
-  <button type="button" onclick="kickstart()">Start</button>
-</form>
+<div class="container">
+	<div id="col1">
+		<div id="map"></div>
+	</div>
 
-<button type="button" onclick="getAddresses()">Pull data</button>
+	<div id="col2">
+		<div id="control_panel">
+			<button type="button" onclick="toggle_rectangle_mode()">Draw<br/>Rectange</button>
+		</div>
+		<form name="latlng_info">
+		  <input type="text" id="latlng" name="latlng" placeholder="Enter comma-separated latitude and longitude"><br>
+		  <input type="text" id="zoom_level" name="zoom_level" placeholder="Default is 15"><br>
+		  <button type="button" onclick="kickstart()">Start</button>
+		</form>
 
-<div id="coordinates"></div>
-<div id="address"></div>
+		<button type="button" onclick="getAddresses()">Pull data</button>
+
+		<div id="coordinates"></div>
+		<div id="address"></div>
+	</div>
+</div>
 </body>
 
 </html>

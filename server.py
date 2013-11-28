@@ -32,8 +32,20 @@ def kickstart():
         zoom_level = request.form['zoom_level']
         image_resolution = [600, 600]
 
-        #add_pixel_to_latlng(float(lat), float(lng), image_resolution[0],
-        #  image_resolution[1], zoom_level) 
+        # sw = []
+        # ne = []
+
+        # lat, lng = sw[0], sw[1]
+        # max_lat, max_lng = ne[0], ne[1]
+        # coordinates = []
+
+        # while lng < max_lng:
+        #     while lat < max_lat:
+        #         coordinates.append([lat, lng])
+        #         lat += add_pixel_to_latlng(float(lat), 0.0, image_resolution[0],
+        #                 image_resolution[1], zoom_level)[0]
+        #     lng += add_pixel_to_latlng(0.0, float(lng), image_resolution[0],
+        #             image_resolution[1], zoom_level)[1]
 
         input_file_path =\
             os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
