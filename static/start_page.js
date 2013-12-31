@@ -23,7 +23,7 @@ function calculate_coordinates() {
 		bounds = rectangle.getBounds();
 		sw = bounds.getSouthWest().lat() + ',' + bounds.getSouthWest().lng();
 		ne = bounds.getNorthEast().lat() + ',' + bounds.getNorthEast().lng();
-	} catch (e if e instanceof TypeError) {
+	} catch (e) { //if e instanceof TypeError) {
 		has_coordinates = 'false';
 		sw = 0;
 		ne = 0;

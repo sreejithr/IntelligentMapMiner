@@ -21,7 +21,7 @@ function getAddresses() {
       }
     });
   } else
-    document.getElementById('status').innerHTML = "What do I do now?<br />Mining has been stopped due to a OVER_QUERY_LIMIT error. I recommend you wait for a while to start again!"
+    document.getElementById('status').innerHTML = "What do I do now?<br/>Mining has been stopped due to a OVER_QUERY_LIMIT error. I recommend you wait for a while to start again!"
 }
 
 function codeLatLng(latLngList) {
