@@ -2,10 +2,10 @@ var map;
 var rectangle;
 var rectangle_mode = false;
 
-function calculate_coordinates_with_form_data() {
+function calculate_coordinates_with_form_data(WEB_SERVER) {
 	latlng = document.latlng_info.latlng.value;
 	zoom_level = document.controls.zoom_level.value;
-	action_url = 'http://127.0.0.1:5000/kickstart'
+	action_url = WEB_SERVER + 'kickstart';
 	$.ajax({
 		type: "POST",
 		url: action_url,
@@ -17,7 +17,7 @@ function calculate_coordinates_with_form_data() {
 }
 
 
-function calculate_coordinates() {
+function calculate_coordinates(WEB_SERVER) {
 	has_coordinates = 'true';
 	try {
 		bounds = rectangle.getBounds();
@@ -29,15 +29,15 @@ function calculate_coordinates() {
 		ne = 0;
 	}
 	zoom_level = document.controls.zoom_level.value;
+	action_url = WEB_SERVER + 'kickstart';
 
-	action_url = 'http://127.0.0.1:5000/kickstart'
 	$.ajax({
 		type: "POST",
 		url: action_url,
 		data: {has_coordinates: has_coordinates, sw: sw, ne: ne, zoom_level: zoom_level},
 		success: function(data, textStatus, jqXHR) {
 			console.log(data);
-			document.getElementById('coordinates').innerHTML = "<p>What do I do now? -- Server has the coordinates, bro! Ready to 'Pull Data'</p>";
+			document.getElementById('status').innerHTML = "<p>What do I do now? -- Server has the coordinates, bro! Ready to 'Pull Data'</p>";
 		}
  	});
 }

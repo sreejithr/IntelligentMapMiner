@@ -2,26 +2,32 @@ var geocoder;
 var map;
 var should_proceed = true;
 var request_count = 0;
+var last_unprocessed_coordinate = [];
+var server_url;
 
 function initialize() {
   geocoder = new google.maps.Geocoder();
 }
 
-function getAddresses() {
+function getAddresses(WEB_SERVER) {
+  server_url = WEB_SERVER;
+  if (last_unprocessed_coordinate.length > 0)
+    codeLatLng(last_unprocessed_coordinate.pop());
+
   if (should_proceed == true) {
     $.ajax({
-      'url' : 'http://127.0.0.1:5000/coordinate',
+      'url' : server_url + 'coordinate',
       'type' : 'GET',
       'success' : function(data) {
         if (data != 'null') {
-          setTimeout('getAddresses()', 3000);
+          setTimeout('getAddresses('+action_url+')', 3000);
           latlng = data.split(',');
           codeLatLng(latlng);
         }
       }
     });
   } else
-    document.getElementById('status').innerHTML = "What do I do now?<br/>Mining has been stopped due to a OVER_QUERY_LIMIT error. I recommend you wait for a while to start again!"
+    document.getElementById('status').innerHTML = "What do I do now?<br/>Mining has been stopped due to a OVER_QUERY_LIMIT error. I recommend you wait for a while to start again!";
 }
 
 function codeLatLng(latLngList) {
@@ -35,7 +41,7 @@ function codeLatLng(latLngList) {
         results[0]['coordinate'] = latlng.toString();
         var address = results[0];
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://127.0.0.1:5000/data", true);
+        xhr.open("POST", server_url + "data", true);
         xhr.setRequestHeader("Content-type", "text/plain");
         xhr.send(JSON.stringify(address));
         request_count++;
@@ -46,6 +52,7 @@ function codeLatLng(latLngList) {
       }
     } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
       console.log('Geocoder failed due to: ' + status);
+      last_unprocessed_coordinate.push(latLngList);
       should_proceed = false;
     }
   });

@@ -22,7 +22,7 @@ app.config['IMAGE_FOLDER'] = "images"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    return render_template("index.html", WEB_SERVER=app.config['WEB_SERVER'])
 
 
 @app.route('/kickstart', methods=['POST'])
