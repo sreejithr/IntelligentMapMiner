@@ -65,8 +65,8 @@ def get_coordinates(center_lat, center_lng, zoom_level, image_resolution,
 def get_static_map_image(latlng, zoom_level, image_resolution, input_filename):
 	latlng = [str(each) for each in latlng]
 	image_resolution = [str(each) for each in image_resolution]
-	url = 'http://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&size={}&sensor=false'.format(
-		','.join(latlng), zoom_level, 'x'.join(image_resolution))
+	url = 'http://maps.googleapis.com/maps/api/staticmap?center={}&zoom={}&size={}&sensor=false&key={}'.format(
+		','.join(latlng), zoom_level, 'x'.join(image_resolution), 'AIzaSyBvIP511WOQ71H2fixLG-GvHjOCOK3KLhE')
 
 	try:
 		response = requests.get(url)

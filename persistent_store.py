@@ -10,13 +10,22 @@ class RedisStore:
         for coordinate in list_of_coordinates:
             r_server.sadd("coordinates", ','.join([str(each) for each in coordinate]))
 
+    def store_centers(self, list_of_centers):
+        r_server = redis.Redis("localhost")
+        for center in list_of_centers:
+            r_server.sadd("centers", ','.join([str(each) for each in center]))
+
     def store_address(self, coordinate, address):
         r_server = redis.Redis("localhost")
-        r_server.set(coordinate, address)
+        r_server.sadd("addresses", address)
 
     def get_coordinate(self):
         r_server = redis.Redis("localhost")
         return r_server.spop("coordinates")
+
+    def get_center(self):
+        r_server = redis.Redis("localhost")
+        return r_server.spop("centers")
 
 
 # class ErrorResponse:

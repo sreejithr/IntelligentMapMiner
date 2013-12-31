@@ -13,45 +13,143 @@
 	padding: 0em;
 }
 
+body {
+	background-color: #578074;
+}
+
+.container {
+	width: 90%;
+	margin: 0 auto;
+}
+
+#topbar {
+	background-color: #475757;
+	padding: 1.5em 0;
+	border-bottom: 3px solid #E1D581;
+}
+
+#topbar h1 {
+	font-size: 3em;
+	color: white;
+	font-family: "Palatino", serif;
+	float: left;
+}
+
+#status {
+	overflow: hidden;
+	padding-left: 3em;
+	color: #E1D581;
+	font-family: sans-serif;
+}
+
+#status p {
+	line-height: 1.2em;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
 #map {
 	height: 100%;
 	width: 60%;
 	float: left;
 }
 
-#control_panel button {
-	padding: 4px;
+button {
+	background-color: #ADC080;
+	border-radius: 0px;
+	padding: 1.5em;
+	border: None;
+	border-bottom: 4px solid #475757;
 }
 
+	button:hover {
+		background-color: #E1D581;
+	}
+
+	button:active {
+		background-color: #475757;
+	}
+
+#col2 {
+	overflow: hidden;
+}
+
+#map_control {
+	padding: 10px;
+	padding-left: 10px;
+	font-size: 1em;
+	float: left;
+	width: 90px;
+}
+
+#control_panel {
+	padding: 0 0 2em 2em;
+	overflow: hidden;
+	background-color: #7EA680;
+}
+	
+	#control_panel h3 {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;	
+		font-size: 2em;
+		font-family: sans-serif;
+	}
+
+	#control_panel input {
+		padding: 0.5em;
+	}
+
+#buttons button {
+	width: 11em;
+	margin: 5px 0 0 0;
+}
+
+#address {
+	overflow: scroll;
+	height: 100%;
+}
 </style>
 </head>
 
 <body>
-<div class="container">
-	<div id="col1">
-		<div id="map"></div>
+<div id="topbar">
+	<div class="container">
+		<h1>Intelligent Map Miner</h1>
+		<div id="status"></div>
+	</div>
+</div>
+
+<div id="col1">
+	<div id="map"></div>
+</div>
+
+<div id="col2">
+	<div id="map_control">
+		<button type="button" onclick="toggle_rectangle_mode()">+</br>New<br/>Rectangle</button>
 	</div>
 
-	<div id="col2">
-		<div id="control_panel">
+	<div id="control_panel">
+		<div id="required_fields">
 			<form name="controls">
-				<input type="text" id="zoom_level" name="zoom_level" placeholder="Zoom Level"><br/>
-				<button type="button" onclick="toggle_rectangle_mode()">New<br/>Rectangle</button><br/>
-				<button id="calculate" type="button" onclick="calculate_coordinates()">Calculate<br/>coordinates</button>
+				<input type="text" id="zoom_level" name="zoom_level" placeholder="Zoom Level">	
 			</form>
 		</div>
 
-		<form name="latlng_info">
-		  <input type="text" id="latlng" name="latlng" placeholder="Enter comma-separated latitude and longitude"><br>
-		  <input type="text" id="form_zoom_level" name="form_zoom_level" placeholder="Default is 15"><br>
-		  <button type="button" onclick="calculate_coordinates_with_form_data()">Start</button>
-		</form>
-
-		<button type="button" onclick="getAddresses()">Pull data</button>
-
-		<div id="coordinates"></div>
-		<div id="address"></div>
+		<div id="buttons">
+			<button type="button" onclick="calculate_coordinates()">Calculate<br/>coordinates</button></br>
+			<button type="button" onclick="getAddresses()">Pull data</button>
+		</div>
 	</div>
+
+	<!--<div id="testing_fields">
+		<form name="latlng_info">
+			<h3>[For testing]</h3>
+			<input type="text" id="latlng" name="latlng" placeholder="Enter comma-separated latitude and longitude"><br>
+			<button type="button" onclick="calculate_coordinates_with_form_data()">Start</button>
+		</form>
+	</div> -->
+
+	<div id="address"></div>
 </div>
 </body>
 
