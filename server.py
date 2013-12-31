@@ -1,9 +1,9 @@
 import os
 import json
 import copy
+import time
 
 from flask import (Flask, request, render_template)
-from werkzeug import secure_filename
 
 from persistent_store import RedisStore
 from coordinate_finder import (get_coordinates, add_pixel_to_latlng)
@@ -22,51 +22,68 @@ app.config['IMAGE_FOLDER'] = "images"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html") #redirect(url_for('kickstart'))
+    return render_template("index.html")
 
 
 @app.route('/kickstart', methods=['POST'])
 def kickstart():
     if request.method == 'POST':
         # Extract necessary information from the request
-        sw, ne = request.form['sw'], request.form['ne']
-        sw = [float(each) for each in sw.split(',')]
-        ne = [float(each) for each in ne.split(',')]
+        has_coordinates = request.form['has_coordinates']
         zoom_level = request.form['zoom_level']
         image_resolution = [600, 600]
 
-        # Assign information to respective variables. Make a copy of latitude
-        # (lat) for the sake of the while loop ahead
-        lat, lng = sw[0], sw[1]
-        max_lat, max_lng = ne[0], ne[1]
-        centers = []
-        initial_lat = copy.copy(lat)
+        if has_coordinates == 'true':
+            sw, ne = request.form['sw'], request.form['ne']
+            sw = [float(each) for each in sw.split(',')]
+            ne = [float(each) for each in ne.split(',')]
 
-        # We find out the centers of all the static images to be obtained.
-        while lng < max_lng:
-            lat = initial_lat
-            while lat < max_lat:
-                centers.append([lat, lng])
-                lat = add_pixel_to_latlng(float(lat), float(lng), 0,
-                    -image_resolution[0], zoom_level)[0]
-            lng = add_pixel_to_latlng(float(lat), float(lng),
-                    image_resolution[1], 0, zoom_level)[1]
+            # Assign information to respective variables. Make a copy of latitude
+            # (lat) for the sake of the while loop ahead
+            lat, lng = sw[0], sw[1]
+            max_lat, max_lng = ne[0], ne[1]
+            centers = []
+            initial_lat = copy.copy(lat)
 
-        print len(centers)
+            # We find out the centers of all the static images to be obtained.
+            while lng < max_lng:
+                lat = initial_lat
+                while lat < max_lat:
+                    centers.append([lat, lng])
+                    lat = add_pixel_to_latlng(float(lat), float(lng), 0,
+                        -image_resolution[0], zoom_level)[0]
+                lng = add_pixel_to_latlng(float(lat), float(lng),
+                        image_resolution[1], 0, zoom_level)[1]
 
-        storage = RedisStore()
-        for center in centers:
-            input_file_path =\
-                os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
-                    'map{}_{}.jpg'.format(center[0], center[1]))
-            output_file_path =\
-                os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
-                    'result{}_{}.jpg'.format(center[0], center[1]))
-            
-            storage.store_coordinate(get_coordinates(float(lat), float(lng),
-                zoom_level, image_resolution, input_file_path, output_file_path))
+            print "No of tiles: ", len(centers)
+            storage = RedisStore()
+            storage.store_centers(centers)
+        return download_and_extract_coordinates(zoom_level, image_resolution)
 
-    return "Success"
+
+def download_and_extract_coordinates(zoom_level, image_resolution):
+    storage = RedisStore()
+    center = storage.get_center()
+    coordinates = []
+
+    while center:
+        center = [float(each) for each in center.split(',')]
+        input_file_path =\
+            os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+                'map{}_{}.jpg'.format(center[0], center[1]))
+        output_file_path =\
+            os.path.join('/Users/sreejith/MQuotient/maps/google_miner/images',
+                'result{}_{}.jpg'.format(center[0], center[1]))
+        time.sleep(2)
+        coordinate = get_coordinates(float(center[0]), float(center[1]),
+            zoom_level, image_resolution, input_file_path, output_file_path)
+        coordinates += coordinate
+        storage.store_coordinate(coordinate)
+        center = storage.get_center()
+
+    coordinate_count = len(coordinates)
+    print "No of coordinates: ", coordinate_count
+    return str(coordinate_count)
 
 
 # @app.route('/upload', methods=['GET', 'POST'])
@@ -98,25 +115,24 @@ def kickstart():
 @app.route('/data', methods=['POST'])
 def accept_data():
     if request.method == 'POST':
-        print request.data
-        #storage = RedisStore()
-        #storage.store_address()
-        # with open(os.path.join(app.config['RESULT_FOLDER'],
-        #     app.config['OUTPUT_FILE_NAME']), 'a') as f:
-        #     data = json.loads(request.data)
-        #     to_save = save_to_file(data['address_components'])
-        #     f.write(to_save + '\n')
-        #     f.flush()
-        # return "hey"
-    return "hey"
+        address = json.loads(request.data)
+        coordinate = json.loads(request.data)['coordinate']
+
+        with open('addresses.log', 'a') as f:
+            f.write(request.data + '\n')
+            f.flush()
+
+        storage = RedisStore()
+        storage.store_address(coordinate, address)
+        return "Success"
+
 
 @app.route('/coordinate', methods=['GET'])
 def vend_coordinates():
     storage = RedisStore()
     result = storage.get_coordinate()
-    print result
-    import time
-    time.sleep(2)
+    time.sleep(3)
+    print "Vending coordinate {} to client".format(result)
     if result is not None:
         return str(result)
     return "null" 
